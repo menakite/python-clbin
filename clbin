@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+import argparse
+import subprocess
+import sys
+
+import requests
+
+args_parser = argparse.ArgumentParser()
+args_parser.add_argument('-f', '--file', help='file whose contents you want to upload', dest='filename')
+args_parser.add_argument('command', nargs=argparse.REMAINDER)
+args = args_parser.parse_args()
+
+data = {'clbin': ''}
+files = None
+
+# Precedence:
+# 1) -f file
+# 2) command output (stdout and stderr)
+# 3) read stdin
+try:
+    if args.filename:
+        if args.filename.endswith(('gif', 'jpeg', 'jpg', 'png')): # See https://clbin.com/ for supported file extensions
+            data = None
+            files = {'clbin': (args.filename, open(args.filename, 'rb'), 'application/octet-stream')}
+        else:
+            data['clbin'] = open(args.filename).read()
+    elif args.command:
+        try:
+            data['clbin'] = subprocess.check_output(args.command, stderr=subprocess.STDOUT, shell=True)
+        except subprocess.CalledProcessError as e:
+            data['clbin'] = e.output
+    else:
+        data['clbin'] = sys.stdin.read()
+
+    response = requests.post('https://clbin.com/', data, files=files)
+    print(response.content.decode('utf-8').strip())
+except KeyboardInterrupt:
+    pass
