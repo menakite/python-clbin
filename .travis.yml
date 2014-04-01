@@ -1,0 +1,9 @@
+language: python
+python:
+  - "2.7"
+  - "3.2"
+  - "3.3"
+install:
+  - pip install flake8 pep8-naming --use-mirrors
+script:
+  - flake8 clbin
