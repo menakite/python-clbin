@@ -19,14 +19,15 @@ files = None
 # 3) read stdin
 try:
     if args.filename:
-        if args.filename.endswith(('gif', 'jpeg', 'jpg', 'png')): # See https://clbin.com/ for supported file extensions
+        # See https://clbin.com/ for supported file extensions
+        if args.filename.endswith(('gif', 'jpeg', 'jpg', 'png')):
             data = None
             files = {'clbin': (args.filename, open(args.filename, 'rb'), 'application/octet-stream')}
         else:
             data['clbin'] = open(args.filename).read()
     elif args.command:
         try:
-            data['clbin'] = subprocess.check_output(args.command, stderr=subprocess.STDOUT, shell=True)
+            data['clbin'] = subprocess.check_output(' '.join(args.command), stderr=subprocess.STDOUT, shell=True)
         except subprocess.CalledProcessError as e:
             data['clbin'] = e.output
     else:
