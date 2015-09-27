@@ -13,4 +13,4 @@
 
  `clbin uname -r`
 
- `clbin 'ps ux | grep -i python'``
+ `clbin 'ps ux | grep -i python'`
