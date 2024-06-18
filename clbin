@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3 -W ignore::Warning:urllib3:35
 import argparse
 import subprocess
 import sys
@@ -11,7 +11,6 @@ args_parser.add_argument('command', nargs=argparse.REMAINDER)
 args = args_parser.parse_args()
 
 data = {'clbin': ''}
-files = None
 
 # Precedence:
 # 1) -f file
@@ -19,12 +18,7 @@ files = None
 # 3) read stdin
 try:
     if args.filename:
-        # See https://clbin.com/ for supported file extensions
-        if args.filename.endswith(('gif', 'jpeg', 'jpg', 'png')):
-            data = None
-            files = {'clbin': (args.filename, open(args.filename, 'rb'), 'application/octet-stream')}
-        else:
-            data['clbin'] = open(args.filename).read()
+        data['clbin'] = open(args.filename).read()
     elif args.command:
         try:
             data['clbin'] = subprocess.check_output(' '.join(args.command), stderr=subprocess.STDOUT, shell=True)
@@ -33,7 +27,7 @@ try:
     else:
         data['clbin'] = sys.stdin.read()
 
-    response = requests.post('https://clbin.com/', data, files=files)
+    response = requests.post('https://clbin.com/', data)
     print(response.content.decode('utf-8').strip())
 except KeyboardInterrupt:
     pass

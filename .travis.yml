@@ -1,9 +1,12 @@
 sudo: false
 language: python
 python:
-  - "2.7"
-  - "3.2"
-  - "3.3"
+  - "3.8"
+  - "3.9"
+  - "3.10"
+  - "3.11"
+  - "3.12"
+  - "3.13-dev"
 install:
   - pip install flake8 pep8-naming --use-mirrors
 script:
